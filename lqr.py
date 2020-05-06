@@ -38,7 +38,7 @@ def find_lqr_control_input(cart_pole_env):
     :param cart_pole_env: to extract all the relevant constants
     :return: a tuple (xs, us, Ks). xs - a list of (predicted) states, each element is a numpy array of shape (4,1).
     us - a list of (predicted) controls, each element is a numpy array of shape (1,1). Ks - a list of control transforms
-    to map from state to action of shape (1,4).
+    to map from state to action, np.matrix of shape (1,4).
     '''
     assert isinstance(cart_pole_env, CartPoleContEnv)
 
