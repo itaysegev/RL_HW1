@@ -6,41 +6,64 @@ import datetime
 
 def dijkstra(puzzle):
     '''
-    apply dijkstra to a given puzzle
-    :param puzzle: the puzzle to solve
-    :return: a dictionary mapping state (as strings) to the action that should be taken (also a string)
+    Apply Dijkstra's algorithm to a given puzzle
+    :param puzzle: The puzzle to solve
+    :return: A dictionary mapping state (as strings) to the action that should be taken (also a string)
     '''
 
-    # general remark - to obtain hashable keys, instead of using State objects as keys, use state.as_string() since
-    # these are immutable.
+    initial = puzzle.start_state.to_string()
+    goal = puzzle.goal_state.to_string()
 
-    initial = puzzle.start_state
-    goal = puzzle.goal_state
-
-    # the fringe is the queue to pop items from
-    fringe = [(0, initial)]
-    # concluded contains states that were already resolved
+    # The fringe is the queue to pop items from
+    fringe = [(0, puzzle.start_state)]
+    # Concluded contains states that were already resolved
     concluded = set()
-    # a mapping from state (as a string) to the currently minimal distance (int).
-    distances = {initial.to_string(): 0}
-    # the return value of the algorithm, a mapping from a state (as a string) to the state leading to it (NOT as string)
+    # A mapping from state (as a string) to the currently minimal distance (int).
+    distances = {initial: 0}
+    # The return value of the algorithm, a mapping from a state (as a string) to the state leading to it (NOT as string)
     # that achieves the minimal distance to the starting state of puzzle.
-    prev = {initial.to_string(): None}
+    prev = {initial: None}
 
     while len(fringe) > 0:
-        # remove the following line and complete the algorithm
-        assert False
+        _, current = heapq.heappop(fringe)
+        current_str = current.to_string()
+
+        # If we have already visited this node, skip
+        if current_str in concluded:
+            continue
+
+        # Mark current node as visited
+        concluded.add(current_str)
+
+        # If we have reached the goal, we are done
+        if current_str == goal:
+            break
+
+        for action in current.get_actions():
+            # Generate new state based on action
+            next_state = current.apply_action(action)
+            next_state_str = next_state.to_string()
+
+            # Calculate tentative distance through current node
+            tentative_distance = distances[current_str] + 1
+
+            if next_state_str not in distances or tentative_distance < distances[next_state_str]:
+                # This path is the best until now. Record it!
+                distances[next_state_str] = tentative_distance
+                priority = tentative_distance
+                heapq.heappush(fringe, (priority, next_state))
+                prev[next_state_str] = current_str
+
     return prev
 
 
 def solve(puzzle):
-    # compute mapping to previous using dijkstra
+    # Compute mapping to previous using Dijkstra's algorithm
     prev_mapping = dijkstra(puzzle)
-    # extract the state-action sequence
+    # Extract the state-action sequence
     plan = traverse(puzzle.goal_state, prev_mapping)
     print_plan(plan)
     return plan
-
 
 if __name__ == '__main__':
     # we create some start and goal states. the number of actions between them is 25 although a shorter plan of

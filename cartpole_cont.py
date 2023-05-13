@@ -4,7 +4,6 @@ from gym import spaces
 from gym.utils import seeding
 import numpy as np
 
-
 class CartPoleContEnv(gym.Env):
     metadata = {
         'render.modes': ['human', 'rgb_array'],
@@ -145,7 +144,7 @@ class CartPoleContEnv(gym.Env):
 
 if __name__ == '__main__':
     env = CartPoleContEnv()
-    # run no force
+    # # run no force
     env.reset()
     env.render()
     is_done = False

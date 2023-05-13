@@ -4,10 +4,11 @@ import heapq
 import datetime
 
 
-def a_star(puzzle):
+def a_star_alpha(puzzle, alpha):
     '''
-    Apply A* to a given puzzle
+    Apply A* with a parameterized heuristic function to a given puzzle
     :param puzzle: The puzzle to solve
+    :param alpha: The parameter alpha for the heuristic function
     :return: A dictionary mapping state (as strings) to the action that should be taken (also a string)
     '''
 
@@ -50,19 +51,19 @@ def a_star(puzzle):
             if next_state_str not in distances or tentative_distance < distances[next_state_str]:
                 # This path is the best until now. Record it!
                 distances[next_state_str] = tentative_distance
-                priority = tentative_distance + next_state.get_manhattan_distance(puzzle.goal_state)
+                priority = tentative_distance + alpha * next_state.get_manhattan_distance(puzzle.goal_state)
                 heapq.heappush(fringe, (priority, next_state))
                 prev[next_state_str] = current_str
 
     return prev
 
 
-def solve(puzzle):
-    # Compute mapping to previous using A*
-    prev_mapping = a_star(puzzle)
+def solve_alpha(puzzle, alpha):
+    # Compute mapping to previous using A* with alpha
+    prev_mapping = a_star_alpha(puzzle, alpha)
     # Extract the state-action sequence
     plan = traverse(puzzle.goal_state, prev_mapping)
-    print_plan(plan)
+    #print_plan(plan)
     return plan
 
 
@@ -79,9 +80,12 @@ if __name__ == '__main__':
         goal_state = goal_state.apply_action(a)
     puzzle = Puzzle(initial_state, goal_state)
     print('Original number of actions: {}'.format(len(actions)))
-    solution_start_time = datetime.datetime.now()
-    solve(puzzle)
-    print('Time to solve: {}'.format(datetime.datetime.now() - solution_start_time))
 
+    alphas = [0, 1, 5,10, float('inf')]
 
-
+    for alpha in alphas:
+        print(f"Alpha: {alpha}")
+        solution_start_time = datetime.datetime.now()
+        solve_alpha(puzzle, alpha)
+        print('Time to solve: {}'.format(datetime.datetime.now() - solution_start_time))
+        print("-----------------------------------------")
