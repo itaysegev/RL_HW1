@@ -7,15 +7,18 @@ def traverse(goal_state, prev):
     :return: A list of (state, actions) such that the first element is (start_state, a_0), and the last is
     (goal_state, None)
     '''
-    result = []
+    result = [(goal_state, None)]
     current_state = goal_state.to_string()
 
     # Backtrack from the goal state to the start state
     while current_state is not None:
-        state = State(current_state)
-        action = prev[current_state]
-        result.append((state, action))
-        current_state = prev[current_state]
+        prev_state_str = prev.get(current_state, None)
+        prev_state = State(prev_state_str)
+        for action in prev_state.get_actions():
+            if prev_state.apply_action(action).to_string() == current_state:
+                result.append((prev_state, action))  # Found the action that leads to the current state
+
+        current_state = prev_state_str
 
     # Reverse the result to get the correct order
     result.reverse()
@@ -25,8 +28,8 @@ def traverse(goal_state, prev):
 
 
 def print_plan(plan):
-    print('Plan length: {}'.format(len(plan) - 1))
+    print('plan length {}'.format(len(plan) - 1))
     for current_state, action in plan:
         print(current_state.to_string())
         if action is not None:
-            print('Apply action: {}'.format(action))
+            print('apply action {}'.format(action))

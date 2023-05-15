@@ -53,7 +53,7 @@ def a_star(puzzle):
                 priority = tentative_distance + next_state.get_manhattan_distance(puzzle.goal_state)
                 heapq.heappush(fringe, (priority, next_state))
                 prev[next_state_str] = current_str
-
+    print("Number visited states:{}".format(len(concluded)))
     return prev
 
 

@@ -53,14 +53,14 @@ def dijkstra(puzzle):
                 priority = tentative_distance
                 heapq.heappush(fringe, (priority, next_state))
                 prev[next_state_str] = current_str
-
+    print("Number visited states:{}".format(len(concluded)))
     return prev
 
 
 def solve(puzzle):
-    # Compute mapping to previous using Dijkstra's algorithm
+    # compute mapping to previous using dijkstra
     prev_mapping = dijkstra(puzzle)
-    # Extract the state-action sequence
+    # extract the state-action sequence
     plan = traverse(puzzle.goal_state, prev_mapping)
     print_plan(plan)
     return plan
